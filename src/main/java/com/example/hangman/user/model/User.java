@@ -28,7 +28,7 @@ public class User {
     @Column(name = "picture ", columnDefinition = "LONGTEXT" )
     private String picture;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Set<Game> game;
 
 }

@@ -3,19 +3,26 @@ package com.example.hangman.user.service.impl;
 import com.example.hangman.user.dto.CreateUserDTO;
 import com.example.hangman.user.dto.UpdatePasswordDTO;
 import com.example.hangman.user.dto.UpdateUsernameDTO;
+import com.example.hangman.game.repository.GameRepository;
 import com.example.hangman.user.model.User;
 import com.example.hangman.user.repository.UserRepository;
 import com.example.hangman.user.service.UserService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@Transactional
 public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private GameRepository gameRepository;
+
 
     @Override
     public User createUser(CreateUserDTO request) {
@@ -35,6 +42,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Удаляем все игры пользователя из базы данных
+        gameRepository.deleteAllByUser(user);
+
+        // Удаляем самого пользователя
         userRepository.deleteById(userId);
     }
 

@@ -13,4 +13,5 @@ public interface GameRepository extends JpaRepository<Game, Long> {
     List<Game> findAllByUserOrderByPlayDateDesc (User user);
     List<Game> findAllByUserAndWinIsTrue (User user);
     List<Game> findAllByUserAndWinIsFalse (User user);
+    void deleteAllByUser(User user);
 }
