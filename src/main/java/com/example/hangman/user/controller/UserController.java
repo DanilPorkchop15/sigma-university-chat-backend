@@ -41,7 +41,7 @@ public class UserController {
         try {
             var createdUser = userService.createUser(request);
             if (createdUser != null){
-                return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
+                return new ResponseEntity<>(createdUser, HttpStatus.OK);
             }
             return new ResponseEntity<>("User already exist", HttpStatus.UNAUTHORIZED);
         } catch (Exception e) {
@@ -61,16 +61,52 @@ public class UserController {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    @PutMapping("/{id}/username")
+    public ResponseEntity<?> updateUsername(
+            @PathVariable Long id,
+            @RequestBody UpdateUsernameDTO request
+    ){
+        try {
+            var user = userService.changeUsername(id, request);
+            if (user != null){
+                return new ResponseEntity<>(user, HttpStatus.OK);
+            }
+            return new ResponseEntity<>("User doesn't exist", HttpStatus.NOT_FOUND);
+
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @PutMapping("/{id}/password")
+    public ResponseEntity<?> updatePassword(
+            @PathVariable Long id,
+            @RequestBody UpdatePasswordDTO request
+    ){
+        try {
+            var user = userService.changePassword(id, request);
+            if (user != null){
+                return new ResponseEntity<>(user, HttpStatus.OK);
+            }
+            return new ResponseEntity<>("User doesn't exist", HttpStatus.NOT_FOUND);
+
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
     @PutMapping("/{id}/rating")
     public ResponseEntity<?> updateUserRating(
             @PathVariable("id") Long id,
             @RequestBody UpdateRatingDTO updatedUser
     ) {
-        User user = ratingService.update(updatedUser, id);
-        if (user != null){
-            return new ResponseEntity<>(user, HttpStatus.OK);
+        try {
+            var user = ratingService.update(updatedUser, id);
+            if (user != null){
+                return new ResponseEntity<>(user, HttpStatus.OK);
+            }
+            return new ResponseEntity<>("User doesn't exist", HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>("User doesn't exist", HttpStatus.NOT_FOUND);
     }
     @GetMapping("/top")
     public ResponseEntity<List<RatingUserDTO>> getUserTop(){
